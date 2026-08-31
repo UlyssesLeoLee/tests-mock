@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
-"""End-to-end smoke test for the 5 mock backends (docs-only stub mode).
+"""End-to-end smoke test for the 4 trait mock backends + 1 core meta entry.
 
 Phase 1 (docs-only) behaviour:
   - Runs ``cargo test --workspace`` to verify all trait stubs compile + pass.
-  - For each of 5 mock backends × 5 methods, records a status row.
-    Phase 1 status is ``skipped_unimplemented`` (trait stub exists, real impl
-    lands in Phase 2). ``pass`` / ``fail`` will be set by Phase 2 once
-    in-process implementations land.
+  - For each of 4 trait mock backends (s3 / vault / git / ai) x 5 methods,
+    records a status row. Phase 1 status is ``skipped_unimplemented`` (trait
+    stub exists, real impl lands in Phase 2). ``pass`` / ``fail`` will be
+    set by Phase 2 once in-process implementations land. Total 20 method
+    entries.
+  - Adds 1 core meta entry: ``cargo_test_workspace`` overall result.
+  - Total: 21 entries (20 method + 1 core).
+  - core is NOT a mock backend -- it is the shared chassis
+    (error/config/lifecycle) tracked separately as a meta entry.
   - Writes report to ``$TEMP/tests-mock-smoke-report.json``.
 
 Usage:
@@ -31,6 +36,9 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
+
+# 4 trait mock backends (s3/vault/git/ai) -- core is shared chassis, tracked as meta
+TRAIT_BACKENDS = ("s3", "vault", "git", "ai")
 
 METHODS: Dict[str, List[str]] = {
     "s3": ["head_bucket", "put_object", "get_object", "list_objects", "delete_object"],
@@ -68,8 +76,8 @@ def main(argv: List[str] | None = None) -> int:
     cargo_exit = proc.returncode
 
     results: list[dict] = []
-    for backend, methods in METHODS.items():
-        for method in methods:
+    for backend in TRAIT_BACKENDS:
+        for method in METHODS[backend]:
             results.append(
                 {
                     "backend": backend,
@@ -82,13 +90,14 @@ def main(argv: List[str] | None = None) -> int:
                 }
             )
 
+    # core = shared chassis (error/config/lifecycle), tracked as meta entry (not a mock backend)
     results.append(
         {
             "backend": "core",
             "method": "cargo_test_workspace",
             "status": "pass" if cargo_exit == 0 else "fail",
             "latency_ms": cargo_latency_ms,
-            "note": f"cargo test --workspace exit={cargo_exit}",
+            "note": f"cargo test --workspace exit={cargo_exit} (core is shared chassis, meta entry)",
         }
     )
 

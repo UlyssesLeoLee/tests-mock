@@ -16,6 +16,10 @@ pub enum MockMode {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MockConfig {
     pub mode: MockMode,
+    /// 监听端口（Docker 模式下使用；InProcess 模式默认 0）
+    pub port: u16,
+    /// 进程 ID（Docker 模式下的容器 PID；InProcess 模式默认 None）
+    pub pid: Option<u32>,
     pub s3_endpoint: Option<String>,
     pub vault_endpoint: Option<String>,
     pub git_endpoint: Option<String>,
@@ -28,6 +32,8 @@ impl Default for MockConfig {
     fn default() -> Self {
         Self {
             mode: MockMode::InProcess,
+            port: 0,
+            pid: None,
             s3_endpoint: None,
             vault_endpoint: None,
             git_endpoint: None,

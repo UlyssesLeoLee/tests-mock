@@ -2,14 +2,19 @@
 #Requires -Version 7.0
 <#
 .SYNOPSIS
-    End-to-end smoke test for the 5 mock backends (docs-only stub mode).
+    End-to-end smoke test for the 4 trait mock backends + 1 core meta entry.
 
 .DESCRIPTION
     Phase 1 (docs-only) behaviour:
       - Runs `cargo test --workspace` to verify all trait stubs compile + pass
       - Runs the loader helper's own integration tests (loader_smoke.rs)
-      - For each of 5 mock backends × 5 methods, records pass/fail latency
-        (Phase 1: pass = trait stub exists; Phase 2: pass = method returns Ok)
+      - For each of 4 trait mock backends (s3 / vault / git / ai) × 5 methods,
+        records pass/fail latency (Phase 1: pass = trait stub exists;
+        Phase 2: pass = method returns Ok). Total 20 method entries.
+      - Adds 1 core meta entry: `cargo test --workspace` overall result.
+      - Total: 21 entries (20 method + 1 core).
+      - core is NOT a mock backend — it is the shared chassis (error/config/lifecycle)
+        tracked separately as a meta entry.
       - Writes report to $env:TEMP/tests-mock-smoke-report.json
 
 .PARAMETER ReportFile
@@ -63,8 +68,11 @@ $methods = @{
     ai    = @('complete', 'embed', 'stream_token', 'cancel', 'usage_stats')
 }
 
+# 4 trait mock backends (s3/vault/git/ai) — core is shared chassis, treated as meta
+$traitBackends = @('s3', 'vault', 'git', 'ai')
+
 $results = @()
-foreach ($backend in @('s3', 'vault', 'git', 'ai')) {
+foreach ($backend in $traitBackends) {
     foreach ($method in $methods[$backend]) {
         # Phase 1: trait stub exists ⇒ "skipped_unimplemented"
         # Phase 2 will exercise the method and report real pass/fail latency
@@ -79,21 +87,23 @@ foreach ($backend in @('s3', 'vault', 'git', 'ai')) {
     }
 }
 
-# Add a meta entry: cargo test overall
+# Add a meta entry: cargo test overall (core = shared chassis, NOT a mock backend)
 $results += [ordered]@{
     backend    = 'core'
     method     = 'cargo_test_workspace'
     status     = if ($cargoExit -eq 0) { 'pass' } else { 'fail' }
     latency_ms = $cargoLatencyMs
-    note       = "cargo test --workspace exit=$cargoExit"
+    note       = "cargo test --workspace exit=$cargoExit (core is shared chassis, meta entry)"
 }
 
 # ---------------------------------------------------------------------------
 # 3. Write smoke report
 # ---------------------------------------------------------------------------
-$passed = ($results | Where-Object { $_.status -eq 'pass' }).Count
-$failed = ($results | Where-Object { $_.status -eq 'fail' }).Count
-$skipped = ($results | Where-Object { $_.status -eq 'skipped_unimplemented' }).Count
+# Use @(...) wrap to force array semantics on Where-Object result
+# (PowerShell .Count on a single hashtable returns property count, not length)
+$passed = @($results | Where-Object { $_.status -eq 'pass' }).Count
+$failed = @($results | Where-Object { $_.status -eq 'fail' }).Count
+$skipped = @($results | Where-Object { $_.status -eq 'skipped_unimplemented' }).Count
 
 $report = [ordered]@{
     smoke_at_unix_ms = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
