@@ -1,0 +1,14 @@
+[package]
+name = "tests-mock-ai"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "AI provider mock backend (5 behaviors)"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tests-mock-core = { workspace = true }

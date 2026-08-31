@@ -1,0 +1,31 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/tests-mock-core",
+    "crates/tests-mock-s3",
+    "crates/tests-mock-vault",
+    "crates/tests-mock-git",
+    "crates/tests-mock-ai",
+    "crates/tests-mock-fixtures",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Ulysses <ulysses@mavis.local>"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/UlyssesLeoLee/tests-mock"
+publish = false
+
+[workspace.dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "sync", "time", "fs", "io-util"] }
+tests-mock-core = { path = "crates/tests-mock-core" }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+[profile.dev]
+debug = 1

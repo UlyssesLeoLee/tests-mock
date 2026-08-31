@@ -1,0 +1,14 @@
+[package]
+name = "tests-mock-fixtures"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "JSON fixtures + loader helper for tests-mock"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tests-mock-core = { workspace = true }

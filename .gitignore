@@ -1,0 +1,27 @@
+# Rust build artifacts
+/target
+**/target/
+**/*.rs.bk
+
+# Editor / OS noise
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Local mock state
+/tmp/tests-mock-state.json
+/tmp/tests-mock-smoke-report.json
+*.log
+!docs/.gitkeep
+!crates/tests-mock-fixtures/fixtures/.gitkeep
+
+# Cargo registry & lock for sub-crate copies (keep workspace lock only)
+**/Cargo.lock.bak
+
+# Ad-hoc cargo / script logs
+cargo-check-*.log
+cargo-test-*.log
+target-*.log
+target-*.log.err

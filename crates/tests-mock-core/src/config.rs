@@ -1,0 +1,39 @@
+//! Mock backend 共享配置。
+
+use serde::{Deserialize, Serialize};
+
+/// Mock backend 运行模式
+///
+/// - `InProcess`：纯 in-process 内存实现，单测 / 压测首选
+/// - `Docker`：通过 docker compose 起 fake minIO / postgres / git server
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum MockMode {
+    InProcess,
+    Docker,
+}
+
+/// 跨 mock backend 共享的配置
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MockConfig {
+    pub mode: MockMode,
+    pub s3_endpoint: Option<String>,
+    pub vault_endpoint: Option<String>,
+    pub git_endpoint: Option<String>,
+    pub ai_endpoint: Option<String>,
+    pub state_file: String,
+    pub report_file: String,
+}
+
+impl Default for MockConfig {
+    fn default() -> Self {
+        Self {
+            mode: MockMode::InProcess,
+            s3_endpoint: None,
+            vault_endpoint: None,
+            git_endpoint: None,
+            ai_endpoint: None,
+            state_file: "/tmp/tests-mock-state.json".to_string(),
+            report_file: "/tmp/tests-mock-smoke-report.json".to_string(),
+        }
+    }
+}
