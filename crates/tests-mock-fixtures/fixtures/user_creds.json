@@ -1,0 +1,21 @@
+{
+  "version": "v0.1",
+  "users": [
+    {
+      "name": "alice",
+      "vault_keys": [
+        "openai:key",
+        "github:pat",
+        "gitee:pat"
+      ]
+    },
+    {
+      "name": "bob",
+      "vault_keys": [
+        "anthropic:key",
+        "gitlab:pat"
+      ]
+    }
+  ],
+  "test_key": "sk-mock-test-only-not-real"
+}

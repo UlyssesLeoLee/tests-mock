@@ -1,0 +1,19 @@
+{
+  "version": "v0.1",
+  "responses": [
+    {
+      "prompt_hash": "abc123",
+      "model": "gpt-4o-mini",
+      "completion": "Mock commit message for testing",
+      "tokens": 42,
+      "latency_ms": 235
+    },
+    {
+      "prompt_hash": "def456",
+      "model": "claude-3-5-haiku-latest",
+      "completion": "Mock review comment",
+      "tokens": 128,
+      "latency_ms": 412
+    }
+  ]
+}

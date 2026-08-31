@@ -1,0 +1,19 @@
+{
+  "version": "v0.1",
+  "repos": [
+    {
+      "id": "STAR-1024",
+      "title": "Mock issue STAR-1024",
+      "labels": ["mock"],
+      "priority": "MEDIUM",
+      "status": "OPEN"
+    },
+    {
+      "id": "STAR-1025",
+      "title": "Mock issue STAR-1025",
+      "labels": ["mock", "ai-ide-compat"],
+      "priority": "HIGH",
+      "status": "IN_PROGRESS"
+    }
+  ]
+}

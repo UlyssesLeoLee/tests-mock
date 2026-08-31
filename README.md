@@ -131,4 +131,5 @@ cargo test --workspace
 
 | 版本 | 日期 (JST) | 修订人 | 摘要 | 审批 |
 | --- | --- | --- | --- | --- |
-| v0.1 | 2026-08-31 16:14 | Ulysses（一人公司 12 角色 per DEC-008）— Mavis 接手 | 初版：workspace 骨架 + 5 trait stub + 7 段设计书 + 5 脚本 + 3 fixture | 架构师 (Mavis 接手 agent per DEC-008) |
+| v0.1 | 2026-08-31 16:14 | Ulysses（一人公司 12 角色 per DEC-008）— Mavis 接手 | 初版：workspace 骨架 + 5 trait stub + 7 段设计书 | 架构师 (Mavis 接手 agent per DEC-008) |
+| v0.2 | 2026-08-31 16:43 | Ulysses（一人公司 12 角色 per DEC-008）— Mavis 接手 | 5 脚本双版本（PS + Python）：init/seed/smoke/stress/cleanup + 3 JSON fixture（user_creds/repo_metadata/ai_response_cache）+ loader helper（`load_user_creds`/`load_repo_metadata`/`load_ai_response_cache`，20 单测全 pass） | 架构师 (Mavis 接手 agent per DEC-008) |
